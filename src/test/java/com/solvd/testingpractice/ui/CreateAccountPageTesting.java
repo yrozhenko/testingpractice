@@ -79,7 +79,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         CreateAccountPage createAccPage = hp.clickStartHereAutoModalBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
-        createAccPage.setKeysToNameField(UsefulMethods.getRandomValues(setOfAlphanumericChars, 12));
+        createAccPage.setKeysToNameField(UsefulMethods.getRandomValues(setOfLatinCyrillicAlphanumericChars, 12));
         createAccPage.clickContinueBtn();
         softAssert.assertFalse(createAccPage.verifyEnterNameNotificationDisplayed(), "Enter name notification verifying after set alphanumeric chars.");
         createAccPage.clearNameField();
@@ -103,14 +103,14 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         CreateAccountPage createAccPage = hp.clickStartHereAutoModalBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
-        String expectedRandomCharacters = UsefulMethods.getRandomValues(setOfAlphanumericChars, 50);
+        String expectedRandomCharacters = UsefulMethods.getRandomValues(setOfLatinCyrillicAlphanumericChars, 50);
         LOGGER.info("Created 50 random characters for Name field.");
         createAccPage.setKeysToNameField(expectedRandomCharacters);
         createAccPage.clickContinueBtn();
         String currentText = createAccPage.getTextValueFromNameField();
         softAssert.assertEquals(currentText.length(), expectedRandomCharacters.length(), "Field max capacity checking.");
         createAccPage.clearNameField();
-        expectedRandomCharacters = UsefulMethods.getRandomValues(setOfAlphanumericChars, 55);
+        expectedRandomCharacters = UsefulMethods.getRandomValues(setOfLatinCyrillicAlphanumericChars, 55);
         LOGGER.info("Created 55 random characters to Name field.");
         createAccPage.setKeysToNameField(expectedRandomCharacters);
         createAccPage.clickContinueBtn();
@@ -136,7 +136,46 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         LOGGER.info("On create account page now.");
         createAccPage.setKeysToEmailField("testingtestgmail.com");
         createAccPage.clickContinueBtn();
-        Assert.assertTrue(createAccPage.verifyInvalidEmailNotification(), "invalid email address verifying.");
+        softAssert.assertTrue(createAccPage.verifyInvalidEmailNotification(), "Invalid email address verifying.");
+        createAccPage.clearEmailField();
+        createAccPage.setKeysToEmailField("testingtest@gmailcom");
+        createAccPage.clickContinueBtn();
+        softAssert.assertTrue(createAccPage.verifyInvalidEmailNotification(), "Invalid email address verifying.");
+        softAssert.assertAll();
+        LOGGER.info("All input key verifications are passed.");
         createAccPage.closeDriver();
+    }
+
+    @Test
+    public void checkPasswordFieldMinLength() {
+        WebDriver driver = AbstractPage.initDriver();
+        HomePage hp = new HomePage(driver);
+        hp.open();
+        String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
+        Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
+        Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
+        CreateAccountPage createAccPage = hp.clickStartHereAutoModalBtn();
+        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
+        LOGGER.info("On create account page now.");
+        String setOfLatinAlphanumericChars = setOfLatinChars + setOfNumbers;
+        createAccPage.setKeysToPasswordField(UsefulMethods.getRandomValues(setOfLatinAlphanumericChars, 5));
+        createAccPage.clickContinueBtn();
+        Assert.assertTrue(createAccPage.verifyMinLengthPasswordNotification());
+        createAccPage.closeDriver();
+    }
+
+    @Test
+    public void checkReEnterPasswordFieldFillOutProcedure() {
+        WebDriver driver = AbstractPage.initDriver();
+        HomePage hp = new HomePage(driver);
+        SoftAssert softAssert = new SoftAssert();
+        hp.open();
+        String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
+        Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
+        Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
+        CreateAccountPage createAccPage = hp.clickStartHereAutoModalBtn();
+        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
+        LOGGER.info("On create account page now.");
+
     }
 }

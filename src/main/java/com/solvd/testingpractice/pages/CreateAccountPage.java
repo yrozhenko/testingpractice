@@ -2,10 +2,13 @@ package com.solvd.testingpractice.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 
 public class CreateAccountPage extends AbstractPage {
@@ -56,8 +59,11 @@ public class CreateAccountPage extends AbstractPage {
     @FindBy(xpath = "//div[contains (text(),'Enter your password')]")
     private WebElement enterPasswordNotification;
 
-    @FindBy(xpath = "//div[contains (text(),'Wrong or Invalid email address or mobile phone number')]")
-    private WebElement invalidEmailAddressNotification;
+    @FindAll({@FindBy (xpath = "//div[contains (text(),'Wrong or Invalid email address or mobile phone number')]"), @FindBy(xpath = "//div[contains (text(),' Enter a valid email address')]")})
+    private List<WebElement> invalidEmailAddressNotification;
+
+    @FindAll({@FindBy (xpath = "//div[contains (text(), 'Passwords must be at least 6 characters.')]"), @FindBy (xpath = "//div[contains ( text(), 'Minimum 6 characters required')]")})
+    private List<WebElement> minLengthOfInputPassword;
 
     public CreateAccountPage(WebDriver driver) {
         super(driver);
@@ -176,13 +182,21 @@ public class CreateAccountPage extends AbstractPage {
         LOGGER.info("The field is cleared and empty.");
     }
 
+    public void clearEmailField() {
+        emailInputField.clear();
+        LOGGER.info("The field is cleared and empty.");
+    }
+
     public String getTextValueFromNameField() {
         LOGGER.info("Text values has been gotten from Name field.");
         return nameInputField.getAttribute("value");
     }
 
     public boolean verifyInvalidEmailNotification() {
-        return invalidEmailAddressNotification.isDisplayed();
+        return invalidEmailAddressNotification.stream().anyMatch(WebElement::isDisplayed);
     }
 
+    public boolean verifyMinLengthPasswordNotification() {
+        return minLengthOfInputPassword.stream().anyMatch(WebElement::isDisplayed);
+    }
 }
