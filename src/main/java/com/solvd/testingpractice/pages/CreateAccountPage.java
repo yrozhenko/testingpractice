@@ -65,6 +65,12 @@ public class CreateAccountPage extends AbstractPage {
     @FindAll({@FindBy (xpath = "//div[contains (text(), 'Passwords must be at least 6 characters.')]"), @FindBy (xpath = "//div[contains ( text(), 'Minimum 6 characters required')]")})
     private List<WebElement> minLengthOfInputPassword;
 
+    @FindBy(xpath = "//div[contains (text(), 'Type your password again')]")
+    private WebElement reEnterPasswordNotification;
+
+    @FindBy(xpath = "//div[contains (text(), 'Passwords must match')]")
+    private WebElement reEnterPasswordNotMatchedNotification;
+
     public CreateAccountPage(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
@@ -136,9 +142,11 @@ public class CreateAccountPage extends AbstractPage {
         return isDisplayed && isEnabled;
     }
 
-    public void clickContinueBtn() {
+    public NewAccountVerificationPage clickContinueBtn() {
         continueBtn.click();
         LOGGER.info("Continue btn is clicked.");
+
+        return new NewAccountVerificationPage(driver);
     }
 
     public boolean verifyTitleElementDisplayed() {
@@ -173,7 +181,7 @@ public class CreateAccountPage extends AbstractPage {
     }
 
     public void setKeysToReEnterField(String keys) {
-        reEnterPasswordInputField.sendKeys();
+        reEnterPasswordInputField.sendKeys(keys);
         LOGGER.info("Values are set to input Re-enter password field.");
     }
 
@@ -198,5 +206,13 @@ public class CreateAccountPage extends AbstractPage {
 
     public boolean verifyMinLengthPasswordNotification() {
         return minLengthOfInputPassword.stream().anyMatch(WebElement::isDisplayed);
+    }
+
+    public boolean verifyReEnterPasswordNotification() {
+        return reEnterPasswordNotification.isDisplayed();
+    }
+
+    public boolean verifyReEnterPasswordNotMatchedNotification() {
+        return reEnterPasswordNotMatchedNotification.isDisplayed();
     }
 }

@@ -3,6 +3,7 @@ package com.solvd.testingpractice.ui;
 import com.solvd.testingpractice.pages.AbstractPage;
 import com.solvd.testingpractice.pages.CreateAccountPage;
 import com.solvd.testingpractice.pages.HomePage;
+import com.solvd.testingpractice.pages.NewAccountVerificationPage;
 import com.solvd.testingpractice.utils.ConfigUtil;
 import com.solvd.testingpractice.utils.UsefulMethods;
 import com.solvd.testingpractice.utils.iConstantKeeper;
@@ -21,6 +22,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
     public void verifyElementsOfCreateAccountPage() {
         WebDriver driver = AbstractPage.initDriver();
         HomePage hp = new HomePage(driver);
+        LOGGER.info("__verifyElementsOfCreateAccountPage test__");
         hp.open();
         String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
@@ -50,6 +52,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
     public void verifyFillingAndNotificationRequirementsForAllFields() {
         WebDriver driver = AbstractPage.initDriver();
         HomePage hp = new HomePage(driver);
+        LOGGER.info("__verifyFillingAndNotificationRequirementsForAllFields test__");
         hp.open();
         String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
@@ -72,6 +75,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         WebDriver driver = AbstractPage.initDriver();
         HomePage hp = new HomePage(driver);
         SoftAssert softAssert = new SoftAssert();
+        LOGGER.info("__validateAcceptableSignsOfYourNameField test__");
         hp.open();
         String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
@@ -96,6 +100,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         WebDriver driver = AbstractPage.initDriver();
         HomePage hp = new HomePage(driver);
         SoftAssert softAssert = new SoftAssert();
+        LOGGER.info("__checkForMaxLengthOfYourNameField test__");
         hp.open();
         String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
@@ -127,6 +132,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         WebDriver driver = AbstractPage.initDriver();
         HomePage hp = new HomePage(driver);
         SoftAssert softAssert = new SoftAssert();
+        LOGGER.info("__checkEmailFieldInputValidation test__");
         hp.open();
         String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
@@ -150,6 +156,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
     public void checkPasswordFieldMinLength() {
         WebDriver driver = AbstractPage.initDriver();
         HomePage hp = new HomePage(driver);
+        LOGGER.info("__checkPasswordFieldMinLength test__");
         hp.open();
         String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
@@ -160,7 +167,8 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         String setOfLatinAlphanumericChars = setOfLatinChars + setOfNumbers;
         createAccPage.setKeysToPasswordField(UsefulMethods.getRandomValues(setOfLatinAlphanumericChars, 5));
         createAccPage.clickContinueBtn();
-        Assert.assertTrue(createAccPage.verifyMinLengthPasswordNotification());
+        Assert.assertTrue(createAccPage.verifyMinLengthPasswordNotification(), "Verifying notification of Password min length.");
+        LOGGER.info("Notification is displayed.");
         createAccPage.closeDriver();
     }
 
@@ -169,6 +177,7 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         WebDriver driver = AbstractPage.initDriver();
         HomePage hp = new HomePage(driver);
         SoftAssert softAssert = new SoftAssert();
+        LOGGER.info("__checkReEnterPasswordFieldFillOutProcedure test__");
         hp.open();
         String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
@@ -176,6 +185,42 @@ public class CreateAccountPageTesting implements iConstantKeeper {
         CreateAccountPage createAccPage = hp.clickStartHereAutoModalBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
+        String randomPassword = UsefulMethods.getRandomValues(setOfNumbers, 6);
+        createAccPage.setKeysToPasswordField(randomPassword);
+        createAccPage.clickContinueBtn();
+        softAssert.assertTrue(createAccPage.verifyReEnterPasswordNotification(), "Verifying of notification about empty re-enter password.");
+        createAccPage.setKeysToReEnterField(UsefulMethods.getRandomValues(setOfNumbers, 6));
+        createAccPage.clickContinueBtn();
+        softAssert.assertTrue(createAccPage.verifyReEnterPasswordNotMatchedNotification(), "Verifying of notification about not matched re-entered password.");
+        softAssert.assertAll();
+        LOGGER.info("Two notifications of re-entering password is verified.");
+        createAccPage.closeDriver();
+    }
 
+    @Test
+    public void createAccountWithCorrectValues() {
+        WebDriver driver = AbstractPage.initDriver();
+        HomePage hp = new HomePage(driver);
+        LOGGER.info("__createAccountWithCorrectValues test__");
+        hp.open();
+        String expectedHomepageTitle = "Amazon.com. Spend less. Smile more.";
+        Assert.assertEquals(driver.getTitle(), expectedHomepageTitle, "Home page title verifying.");
+        Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
+        CreateAccountPage createAccPage = hp.clickStartHereAutoModalBtn();
+        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
+        LOGGER.info("On create account page now.");
+        createAccPage.setKeysToNameField("TestName");
+        createAccPage.setKeysToEmailField(UsefulMethods.getRandomValues(setOfLatinChars, 8) + "test@gmail.com");
+        String randomPassword = UsefulMethods.getRandomValues(setOfNumbers, 8);
+        createAccPage.setKeysToPasswordField(randomPassword);
+        createAccPage.setKeysToReEnterField(randomPassword);
+        NewAccountVerificationPage newAccVerificationPage = createAccPage.clickContinueBtn();
+        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/cvf/request"), "Created new account verification page URL checking.");
+        if (newAccVerificationPage.isCaptchaTitleDisplayed() || newAccVerificationPage.isVerifyEmailAddressTitleDisplayed()) {
+            LOGGER.info("On created account verification page now.");
+        } else {
+            LOGGER.error("Verification of URL is not passed!");
+        }
+        createAccPage.closeDriver();
     }
 }
