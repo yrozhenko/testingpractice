@@ -7,14 +7,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class ConfigUtil {
+public class ConfigUtil implements iCharsKeeper {
 
     private final static Logger LOGGER = LogManager.getLogger(ConfigUtil.class);
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
+    private final static String propertiesPath = "src/main/resources/ui.properties";
 
     static {
         try {
-            properties.load(new FileInputStream("src/main/resources/ui.properties"));
+            properties.load(new FileInputStream(propertiesPath));
         } catch (IOException e) {
             LOGGER.warn("Failed to load properties!", e);
         }

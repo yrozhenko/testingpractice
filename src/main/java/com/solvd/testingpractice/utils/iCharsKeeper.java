@@ -1,7 +1,6 @@
 package com.solvd.testingpractice.utils;
 
-public interface iConstantKeeper {
-    
+public interface iCharsKeeper {
     String setOfLatinCyrillicAlphanumericChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзиклмнопрстуфхцчьъэюяАБВГДЕËЖЗИКЛМНОПРСТУФХЦЧЬЪЭЮЯ";
     String setOfLatinChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     String setOfCyrillicChars = "абвгдеёжзиклмнопрстуфхцчьъэюяАБВГДЕËЖЗИКЛМНОПРСТУФХЦЧЬЪЭЮЯ";

@@ -15,7 +15,7 @@ public class CreateAccountPage extends AbstractPage {
     private final static Logger LOGGER = LoggerFactory.getLogger(CreateAccountPage.class);
 
     @FindBy(xpath = "//h1")
-    private WebElement titleElemOfCAPage;
+    private WebElement headlineElem;
 
     @FindBy(css = "[for=ap_customer_name]")
     private WebElement nameFieldLabel;
@@ -56,8 +56,8 @@ public class CreateAccountPage extends AbstractPage {
     @FindBy(xpath = "//div[@id='auth-email-missing-alert']//div[contains (text(),'Enter your email')]")
     private WebElement enterEmailNotification;
 
-    @FindBy(xpath = "//div[contains (text(),'Enter your password')]")
-    private WebElement enterPasswordNotification;
+    @FindAll({@FindBy (xpath = "//div[contains (text(),'Enter your password')]"), @FindBy (xpath = "//div[@id='auth-password-missing-alert']/div/div")})
+    private List<WebElement> enterPasswordNotification;
 
     @FindAll({@FindBy (xpath = "//div[contains (text(),'Wrong or Invalid email address or mobile phone number')]"), @FindBy(xpath = "//div[contains (text(),' Enter a valid email address')]")})
     private List<WebElement> invalidEmailAddressNotification;
@@ -77,92 +77,92 @@ public class CreateAccountPage extends AbstractPage {
     }
 
 
-    public boolean verifyNameLabelDisplayed() {
+    public boolean isNameFieldLabelDisplayed() {
         return nameFieldLabel.isDisplayed();
     }
 
-    public boolean verifyNameInputFieldDisplayedAndEnabled() {
+    public boolean isNameInputFieldDisplayedAndEnabled() {
         boolean isDisplayed = nameInputField.isDisplayed();
         boolean isEnabled = nameInputField.isEnabled();
-
+        LOGGER.info("Name input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
         return isDisplayed && isEnabled;
     }
 
-    public boolean verifyEmailLabelDisplayed() {
+    public boolean isEmailFieldLabelDisplayed() {
         return emailFieldLabel.isDisplayed();
     }
 
-    public boolean verifyEmailInputFieldDisplayedAndEnabled() {
+    public boolean isEmailInputFieldDisplayedAndEnabled() {
         boolean isDisplayed = emailInputField.isDisplayed();
         boolean isEnabled = emailInputField.isEnabled();
-
+        LOGGER.info("Email input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
         return isDisplayed && isEnabled;
     }
 
-    public boolean verifyPasswordLabelDisplayed() {
+    public boolean isPasswordFieldLabelDisplayed() {
         return passwordFieldLabel.isDisplayed();
     }
 
-    public boolean verifyPasswordInputFieldDisplayedAndEnabled() {
+    public boolean isPasswordInputFieldDisplayedAndEnabled() {
         boolean isDisplayed = passwordInputField.isDisplayed();
         boolean isEnabled = passwordInputField.isEnabled();
-
+        LOGGER.info("Password input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
         return isDisplayed && isEnabled;
     }
 
-    public boolean verifyReEnterLabelDisplayed() {
+    public boolean isReEnterFieldLabelDisplayed() {
         return reEnterPasswordFieldLabel.isDisplayed();
     }
 
-    public boolean verifyReEnterInputFieldDisplayedAndEnabled() {
+    public boolean isReEnterInputFieldDisplayedAndEnabled() {
         boolean isDisplayed = reEnterPasswordInputField.isDisplayed();
         boolean isEnabled = reEnterPasswordInputField.isEnabled();
-
+        LOGGER.info("Re-Enter input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
         return isDisplayed && isEnabled;
     }
 
-    public boolean verifyContinueBtnDisplayedAndEnabled() {
+    public boolean isContinueBtnDisplayedAndEnabled() {
         boolean isDisplayed = continueBtn.isDisplayed();
         boolean isEnabled = continueBtn.isEnabled();
-
+        LOGGER.info("Continue btn is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
         return isDisplayed && isEnabled;
     }
 
-    public boolean verifyConditionsOfUseLinkDisplayedAndEnabled() {
+    public boolean isConditionsOfUseLinkDisplayedAndEnabled() {
         boolean isDisplayed = conditionsOfUseLink.isDisplayed();
         boolean isEnabled = conditionsOfUseLink.isEnabled();
-
+        LOGGER.info("'Conditions' link is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
         return isDisplayed && isEnabled;
     }
 
-    public boolean verifyPrivacyNoticeLinkDisplayedAndEnabled() {
+    public boolean isPrivacyNoticeLinkDisplayedAndEnabled() {
         boolean isDisplayed = privacyNoticeLink.isDisplayed();
         boolean isEnabled = privacyNoticeLink.isEnabled();
-
+        LOGGER.info("'Privacy' link is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
         return isDisplayed && isEnabled;
     }
 
-    public NewAccountVerificationPage clickContinueBtn() {
+    public AuthenticationPage clickContinueBtn() {
         continueBtn.click();
         LOGGER.info("Continue btn is clicked.");
 
-        return new NewAccountVerificationPage(driver);
+        return new AuthenticationPage(driver);
     }
 
-    public boolean verifyTitleElementDisplayed() {
-        return titleElemOfCAPage.isDisplayed();
+    public boolean isHeadlineElemDisplayed() {
+        return headlineElem.isDisplayed();
     }
 
-    public boolean verifyEnterNameNotificationDisplayed() {
+    public boolean isEnterNameNotificationDisplayed() {
         return enterNameNotification.isDisplayed();
     }
 
-    public boolean verifyEnterEmailNotificationDisplayed() {
+    public boolean isEnterEmailNotificationDisplayed() {
         return enterEmailNotification.isDisplayed();
     }
 
-    public boolean verifyEnterPasswordNotificationDisplayed() {
-        return enterPasswordNotification.isDisplayed();
+    public boolean isEnterPasswordNotificationDisplayed() {
+        return enterPasswordNotification.stream().anyMatch(WebElement::isDisplayed);
     }
 
     public void setKeysToNameField(String keys) {
@@ -200,19 +200,36 @@ public class CreateAccountPage extends AbstractPage {
         return nameInputField.getAttribute("value");
     }
 
-    public boolean verifyInvalidEmailNotification() {
+    public boolean isInvalidEmailNotificationDisplayed() {
         return invalidEmailAddressNotification.stream().anyMatch(WebElement::isDisplayed);
     }
 
-    public boolean verifyMinLengthPasswordNotification() {
+    public boolean isMinLengthPasswordNotificationDisplayed() {
         return minLengthOfInputPassword.stream().anyMatch(WebElement::isDisplayed);
     }
 
-    public boolean verifyReEnterPasswordNotification() {
+    public boolean isReEnterPasswordNotificationDisplayed() {
         return reEnterPasswordNotification.isDisplayed();
     }
 
-    public boolean verifyReEnterPasswordNotMatchedNotification() {
+    public boolean isReEnterPasswordNotMatchedNotificationDisplayed() {
         return reEnterPasswordNotMatchedNotification.isDisplayed();
     }
+
+//    public String getNameOfEmailFieldLabel() {
+//        return emailFieldLabel.getText();
+//    }
+//
+//    public boolean equalNameOfEmailFieldLabel() {
+//        return getNameOfEmailFieldLabel().equals("Mail");
+//    }
+//
+//    public boolean isElementPresent(WebElement webelement) {
+//        try {
+//            webelement.getTagName();
+//            return true;
+//        } catch (NoSuchElementException e) {
+//            return false;
+//        }
+//    }
 }

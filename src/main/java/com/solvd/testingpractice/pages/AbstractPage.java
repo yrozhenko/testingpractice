@@ -1,8 +1,14 @@
 package com.solvd.testingpractice.pages;
 
 import com.solvd.testingpractice.utils.ConfigUtil;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,14 +30,14 @@ public abstract class AbstractPage {
 
     protected void openPage(String pageURL) {
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.get(pageURL);
         LOGGER.info("Page is opened.");
     }
 
     public void closeDriver() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             LOGGER.error("Exception awaiting termination", e);
         } finally {
@@ -39,4 +45,21 @@ public abstract class AbstractPage {
             LOGGER.info("Driver is closed.");
         }
     }
+
+    public void clickBtnElement(WebElement element, int timeToWait) {
+//        WebElement waitedElement = new WebDriverWait(driver, Duration.ofSeconds(timeToWait)).until(driver -> element);
+        WebElement waitedElement = new WebDriverWait(driver, Duration.ofSeconds(timeToWait)).until(ExpectedConditions.elementToBeClickable(element));
+        String btnName = waitedElement.getText();
+        waitedElement.click();
+        LOGGER.info("\"{}\" btn is clicked.", btnName);
+    }
+
+    public void hoverMouseToElement(WebElement element) {
+        String elementName = element.getText();
+        Actions action = new Actions(driver);
+        action.moveToElement(element);
+        action.perform();
+        LOGGER.info("Mouse is hovered to \"{}\".", elementName);
+    }
+
 }
