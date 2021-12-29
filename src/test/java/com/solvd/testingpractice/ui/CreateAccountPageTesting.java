@@ -1,9 +1,9 @@
 package com.solvd.testingpractice.ui;
 
-import com.solvd.testingpractice.customexceptions.TestInterruptedException;
 import com.solvd.testingpractice.pages.AbstractPage;
 import com.solvd.testingpractice.pages.CreateAccountPage;
 import com.solvd.testingpractice.pages.HomePage;
+import com.solvd.testingpractice.pages.SignInPage;
 import com.solvd.testingpractice.utils.ConfigUtil;
 import com.solvd.testingpractice.utils.UsefulMethods;
 import com.solvd.testingpractice.utils.iCharsKeeper;
@@ -18,7 +18,7 @@ public class CreateAccountPageTesting implements iCharsKeeper {
     private final static Logger LOGGER = LoggerFactory.getLogger(CreateAccountPageTesting.class);
 
     @Test
-    public void verifyElementsOfCreateAccountPage() throws TestInterruptedException {
+    public void verifyElementsOfCreateAccountPage() {
         WebDriver driver = AbstractPage.initDriver();
         HomePage homePage = new HomePage(driver);
         LOGGER.info("__verifyElementsOfCreateAccountPage test__");
@@ -26,35 +26,28 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        if (homePage.isSmallAutoModalMenuDisplayed()) {
-            try {
-                CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
-                Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
-                LOGGER.info("On create account page now.");
-                SoftAssert softAssert = new SoftAssert();
-                softAssert.assertTrue(createAccPage.isHeadlineElemDisplayed(), "Headline element verifying.");
-                softAssert.assertTrue(createAccPage.isNameFieldLabelDisplayed(), "Name label of field verifying.");
-                softAssert.assertTrue(createAccPage.isEmailFieldLabelDisplayed(), "Email label of field verifying.");
-                softAssert.assertTrue(createAccPage.isPasswordFieldLabelDisplayed(), "Password label of field verifying.");
-                softAssert.assertTrue(createAccPage.isReEnterFieldLabelDisplayed(), "Re-enter label of field verifying.");
-                softAssert.assertTrue(createAccPage.isNameInputFieldDisplayedAndEnabled(), "Name input field verifying.");
-                softAssert.assertTrue(createAccPage.isEmailInputFieldDisplayedAndEnabled(), "Email input field verifying.");
-                softAssert.assertTrue(createAccPage.isPasswordInputFieldDisplayedAndEnabled(), "Password input field verifying.");
-                softAssert.assertTrue(createAccPage.isReEnterInputFieldDisplayedAndEnabled(), "Re-enter input field verifying.");
-                softAssert.assertTrue(createAccPage.isContinueBtnDisplayedAndEnabled(), "Continue/submit btn verifying.");
-                softAssert.assertTrue(createAccPage.isConditionsOfUseLinkDisplayedAndEnabled(), "\"Conditions of use\" link verifying.");
-                softAssert.assertTrue(createAccPage.isPrivacyNoticeLinkDisplayedAndEnabled(), "\"Privacy notice\" link verifying.");
-                softAssert.assertAll();
-                LOGGER.info("All common elements of register page are verified.");
-                createAccPage.closeDriver();
-            } catch (org.openqa.selenium.ElementNotInteractableException exception) {
-                LOGGER.error("Check small auto-modal menu: ", exception);
-            }
-        } else {
-            LOGGER.error("Small auto-modal menu was not displayed!");
-            homePage.closeDriver();
-            throw new TestInterruptedException("Small auto-modal menu was not displayed! Test is not complete!");
-        }
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
+        LOGGER.info("On create account page now.");
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertTrue(createAccPage.isHeadlineElemDisplayed(), "Headline element verifying.");
+        softAssert.assertTrue(createAccPage.isNameFieldLabelDisplayed(), "Name label of field verifying.");
+        softAssert.assertTrue(createAccPage.isEmailFieldLabelDisplayed(), "Email label of field verifying.");
+        softAssert.assertTrue(createAccPage.isPasswordFieldLabelDisplayed(), "Password label of field verifying.");
+        softAssert.assertTrue(createAccPage.isReEnterFieldLabelDisplayed(), "Re-enter label of field verifying.");
+        softAssert.assertTrue(createAccPage.isNameInputFieldPresent(), "Name input field verifying.");
+        softAssert.assertTrue(createAccPage.isEmailInputFieldPresent(), "Email input field verifying.");
+        softAssert.assertTrue(createAccPage.isPasswordInputFieldPresent(), "Password input field verifying.");
+        softAssert.assertTrue(createAccPage.isReEnterInputFieldPresent(), "Re-enter input field verifying.");
+        softAssert.assertTrue(createAccPage.isContinueBtnPresent(), "Continue/submit btn verifying.");
+        softAssert.assertTrue(createAccPage.isConditionsOfUseLinkPresent(), "\"Conditions of use\" link verifying.");
+        softAssert.assertTrue(createAccPage.isPrivacyNoticeLinkPresent(), "\"Privacy notice\" link verifying.");
+        softAssert.assertAll();
+        LOGGER.info("All common elements of register page are verified.");
+        createAccPage.closeDriver();
     }
 
     @Test
@@ -66,7 +59,10 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
         createAccPage.clickContinueBtn();
@@ -89,7 +85,10 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
         createAccPage.setKeysToNameField(UsefulMethods.getRandomValues(setOfLatinCyrillicAlphanumericChars, 12));
@@ -114,7 +113,10 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
         String expectedRandomCharacters = UsefulMethods.getRandomValues(setOfLatinCyrillicAlphanumericChars, 50);
@@ -146,7 +148,10 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
         String testEmailNamingWithoutAtSymbol = "testingtestgmail.com";
@@ -164,7 +169,7 @@ public class CreateAccountPageTesting implements iCharsKeeper {
     }
 
     @Test
-    public void checkPasswordFieldMinLength() throws TestInterruptedException {
+    public void checkPasswordFieldMinLength() {
         WebDriver driver = AbstractPage.initDriver();
         HomePage homePage = new HomePage(driver);
         LOGGER.info("__checkPasswordFieldMinLength test__");
@@ -172,25 +177,18 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        if (homePage.isSmallAutoModalMenuDisplayed()) {
-            try {
-                CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
-                Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
-                LOGGER.info("On create account page now.");
-                String setOfLatinAlphanumericChars = setOfLatinChars + setOfNumbers;
-                createAccPage.setKeysToPasswordField(UsefulMethods.getRandomValues(setOfLatinAlphanumericChars, 5));
-                createAccPage.clickContinueBtn();
-                Assert.assertTrue(createAccPage.isMinLengthPasswordNotificationDisplayed(), "Verifying notification of Password min length.");
-                LOGGER.info("Notification is displayed.");
-                createAccPage.closeDriver();
-            } catch (org.openqa.selenium.ElementNotInteractableException exception) {
-                LOGGER.error("Check small auto-modal menu: ", exception);
-            }
-        } else {
-            LOGGER.error("Small auto-modal menu was not displayed!");
-            homePage.closeDriver();
-            throw new TestInterruptedException("Small auto-modal menu was not displayed! Test is not complete!");
-        }
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
+        LOGGER.info("On create account page now.");
+        String setOfLatinAlphanumericChars = setOfLatinChars + setOfNumbers;
+        createAccPage.setKeysToPasswordField(UsefulMethods.getRandomValues(setOfLatinAlphanumericChars, 5));
+        createAccPage.clickContinueBtn();
+        Assert.assertTrue(createAccPage.isMinLengthPasswordNotificationDisplayed(), "Verifying notification of Password min length.");
+        LOGGER.info("Notification is displayed.");
+        createAccPage.closeDriver();
     }
 
     @Test
@@ -203,7 +201,10 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
         String randomPassword = UsefulMethods.getRandomValues(setOfNumbers, 6);
@@ -227,7 +228,10 @@ public class CreateAccountPageTesting implements iCharsKeeper {
         String expectedTitle = "Amazon.com. Spend less. Smile more.";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Home page title verifying.");
         Assert.assertEquals(driver.getCurrentUrl(), ConfigUtil.getProperty("homePageURL"), "Home page URL verifying.");
-        CreateAccountPage createAccPage = homePage.clickStartHereAutoModalBtn();
+        SignInPage signInPage = homePage.clickNavigationalLinkToSignInPage();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("signInPage")), "SignIn page URL verifying.");
+        LOGGER.info("On sign in page now.");
+        CreateAccountPage createAccPage = signInPage.clickCreateNewAccountBtn();
         Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("registerPageURL")), "Register page URL verifying.");
         LOGGER.info("On create account page now.");
         createAccPage.setKeysToNameField("TestName");

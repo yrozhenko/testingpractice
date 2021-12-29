@@ -4,6 +4,7 @@ import com.solvd.testingpractice.customexceptions.TestInterruptedException;
 import com.solvd.testingpractice.pages.AbstractPage;
 import com.solvd.testingpractice.pages.CreateAccountPage;
 import com.solvd.testingpractice.pages.HomePage;
+import com.solvd.testingpractice.pages.SearchingProductsPage;
 import com.solvd.testingpractice.utils.ConfigUtil;
 import com.solvd.testingpractice.utils.iCharsKeeper;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +15,7 @@ import org.testng.annotations.*;
 
 public class HomePageTesting implements iCharsKeeper {
     private final static Logger LOGGER = LoggerFactory.getLogger(HomePageTesting.class);
+
 
     @Test
     public void verifySiteOnHomepage() {
@@ -44,18 +46,34 @@ public class HomePageTesting implements iCharsKeeper {
         HomePage homePage = new HomePage(driver);
         homePage.open();
         if (homePage.isSmallAutoModalMenuDisplayed()) {
-            try {
-                CreateAccountPage createAcPage = homePage.clickStartHereAutoModalBtn();
-                Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
-                Assert.assertTrue(createAcPage.isHeadlineElemDisplayed(), "Headline element of register page verifying.");
-                createAcPage.closeDriver();
-            } catch (org.openqa.selenium.ElementNotInteractableException exception) {
-                LOGGER.error("Check small auto-modal menu: ", exception);
-            }
+            CreateAccountPage createAcPage = homePage.clickStartHereAutoModalBtn();
+            Assert.assertTrue(driver.getCurrentUrl().contains("https://www.amazon.com/ap/register"), "Register page URL verifying.");
+            Assert.assertTrue(createAcPage.isHeadlineElemDisplayed(), "Headline element of register page verifying.");
+            createAcPage.closeDriver();
         } else {
             LOGGER.error("Small auto-modal menu was not displayed!");
             homePage.closeDriver();
             throw new TestInterruptedException("Small auto-modal menu was not displayed! Test is not complete!");
         }
+    }
+
+    @Test
+    public void testSearchingField() {
+        WebDriver driver = AbstractPage.initDriver();
+        HomePage homePage = new HomePage(driver);
+        homePage.open();
+        Assert.assertTrue(homePage.isProductSearchingFieldPresent(), "Top product searching field presence verifying.");
+        homePage.clickOnProductSearchField();
+        String keyValuesForProductSearchingField = "asus laptop";
+        homePage.sendKeysToProductSearchingField(keyValuesForProductSearchingField);
+        String actualValue = homePage.getTextFromProductSearchingField();
+        Assert.assertEquals(actualValue, keyValuesForProductSearchingField, "Checking expected and actual sent keys equal.");
+        Assert.assertTrue(homePage.isSearchSubmitBtnPresent(), "Search submit btn verifying.");
+        SearchingProductsPage searchingProductsPage = homePage.clickOnSearchSubmitBtn();
+        Assert.assertTrue(driver.getCurrentUrl().contains(ConfigUtil.getProperty("searchedProductListURL")), "Searched product list page URL verifying.");
+        LOGGER.info("On searched product list page now.");
+        Assert.assertTrue(searchingProductsPage.isResultProductsContainKeysInName(keyValuesForProductSearchingField), "Comparing of actual typed search text and product list result.");
+        LOGGER.info("Compared the matches between searching test and result product names.");
+        searchingProductsPage.closeDriver();
     }
 }

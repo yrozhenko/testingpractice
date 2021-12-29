@@ -81,71 +81,48 @@ public class CreateAccountPage extends AbstractPage {
         return nameFieldLabel.isDisplayed();
     }
 
-    public boolean isNameInputFieldDisplayedAndEnabled() {
-        boolean isDisplayed = nameInputField.isDisplayed();
-        boolean isEnabled = nameInputField.isEnabled();
-        LOGGER.info("Name input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
-        return isDisplayed && isEnabled;
+    public boolean isNameInputFieldPresent() {
+        return isElementDisplayedAndEnabled(nameInputField, "Name input field");
     }
 
     public boolean isEmailFieldLabelDisplayed() {
         return emailFieldLabel.isDisplayed();
     }
 
-    public boolean isEmailInputFieldDisplayedAndEnabled() {
-        boolean isDisplayed = emailInputField.isDisplayed();
-        boolean isEnabled = emailInputField.isEnabled();
-        LOGGER.info("Email input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
-        return isDisplayed && isEnabled;
+    public boolean isEmailInputFieldPresent() {
+        return isElementDisplayedAndEnabled(emailInputField, "Email input field");
     }
 
     public boolean isPasswordFieldLabelDisplayed() {
         return passwordFieldLabel.isDisplayed();
     }
 
-    public boolean isPasswordInputFieldDisplayedAndEnabled() {
-        boolean isDisplayed = passwordInputField.isDisplayed();
-        boolean isEnabled = passwordInputField.isEnabled();
-        LOGGER.info("Password input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
-        return isDisplayed && isEnabled;
+    public boolean isPasswordInputFieldPresent() {
+        return isElementDisplayedAndEnabled(passwordInputField, "Password input field");
     }
 
     public boolean isReEnterFieldLabelDisplayed() {
         return reEnterPasswordFieldLabel.isDisplayed();
     }
 
-    public boolean isReEnterInputFieldDisplayedAndEnabled() {
-        boolean isDisplayed = reEnterPasswordInputField.isDisplayed();
-        boolean isEnabled = reEnterPasswordInputField.isEnabled();
-        LOGGER.info("Re-Enter input field is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
-        return isDisplayed && isEnabled;
+    public boolean isReEnterInputFieldPresent() {
+        return isElementDisplayedAndEnabled(reEnterPasswordInputField, "Re-enter password input field");
     }
 
-    public boolean isContinueBtnDisplayedAndEnabled() {
-        boolean isDisplayed = continueBtn.isDisplayed();
-        boolean isEnabled = continueBtn.isEnabled();
-        LOGGER.info("Continue btn is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
-        return isDisplayed && isEnabled;
+    public boolean isContinueBtnPresent() {
+        return isElementDisplayedAndEnabled(continueBtn, "Continue/submit btn");
     }
 
-    public boolean isConditionsOfUseLinkDisplayedAndEnabled() {
-        boolean isDisplayed = conditionsOfUseLink.isDisplayed();
-        boolean isEnabled = conditionsOfUseLink.isEnabled();
-        LOGGER.info("'Conditions' link is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
-        return isDisplayed && isEnabled;
+    public boolean isConditionsOfUseLinkPresent() {
+        return isElementDisplayedAndEnabled(conditionsOfUseLink, "Conditions of Use link");
     }
 
-    public boolean isPrivacyNoticeLinkDisplayedAndEnabled() {
-        boolean isDisplayed = privacyNoticeLink.isDisplayed();
-        boolean isEnabled = privacyNoticeLink.isEnabled();
-        LOGGER.info("'Privacy' link is displayed: {}, is enabled: {}.", isDisplayed,  isEnabled);
-        return isDisplayed && isEnabled;
+    public boolean isPrivacyNoticeLinkPresent() {
+        return isElementDisplayedAndEnabled(privacyNoticeLink, "Privacy Notice link");
     }
 
     public AuthenticationPage clickContinueBtn() {
-        continueBtn.click();
-        LOGGER.info("Continue btn is clicked.");
-
+        clickOnElement(continueBtn, "Continue/submit btn", 10);
         return new AuthenticationPage(driver);
     }
 
@@ -196,8 +173,7 @@ public class CreateAccountPage extends AbstractPage {
     }
 
     public String getTextValueFromNameField() {
-        LOGGER.info("Text values has been gotten from Name field.");
-        return nameInputField.getAttribute("value");
+        return getAttributeValueFromElement(nameInputField, "Name field", "value");
     }
 
     public boolean isInvalidEmailNotificationDisplayed() {
@@ -215,21 +191,4 @@ public class CreateAccountPage extends AbstractPage {
     public boolean isReEnterPasswordNotMatchedNotificationDisplayed() {
         return reEnterPasswordNotMatchedNotification.isDisplayed();
     }
-
-//    public String getNameOfEmailFieldLabel() {
-//        return emailFieldLabel.getText();
-//    }
-//
-//    public boolean equalNameOfEmailFieldLabel() {
-//        return getNameOfEmailFieldLabel().equals("Mail");
-//    }
-//
-//    public boolean isElementPresent(WebElement webelement) {
-//        try {
-//            webelement.getTagName();
-//            return true;
-//        } catch (NoSuchElementException e) {
-//            return false;
-//        }
-//    }
 }
