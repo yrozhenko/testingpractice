@@ -4,6 +4,7 @@
         <classes>
             <class name="com.solvd.testingpractice.ui.CreateAccountPageTesting" />
             <class name="com.solvd.testingpractice.ui.HomePageTesting"/>
+            <class name="com.solvd.testingpractice.ui.SearchProductPageTesting"/>
         </classes>
     </test>
 </suite>

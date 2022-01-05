@@ -11,13 +11,23 @@ public class ConfigUtil implements iCharsKeeper {
 
     private final static Logger LOGGER = LogManager.getLogger(ConfigUtil.class);
     private static final Properties properties = new Properties();
-    private final static String propertiesPath = "src/main/resources/ui.properties";
+    private final static String propertiesPath = "src/main/resources/config.properties";
 
     static {
+        FileInputStream input = null;
         try {
-            properties.load(new FileInputStream(propertiesPath));
+            input = new FileInputStream(propertiesPath);
+            properties.load(input);
         } catch (IOException e) {
             LOGGER.warn("Failed to load properties!", e);
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    LOGGER.warn(e.getStackTrace());
+                }
+            }
         }
     }
 
