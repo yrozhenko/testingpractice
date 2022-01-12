@@ -14,7 +14,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <org.testng.version>7.4.0</org.testng.version>
-    <org.apache.log4j.version>2.14.1</org.apache.log4j.version>
+    <org.apache.log4j.version>2.16.0</org.apache.log4j.version>
     <org.selenium.version>4.1.0</org.selenium.version>
   </properties>
 
